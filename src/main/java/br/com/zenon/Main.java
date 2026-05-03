@@ -9,8 +9,10 @@ public class Main {
     static void main() {
         var ingestor = new TransactionIngestor();
         var analyzer = new FraudAnalyzer();
+        var report = new TransactionReport();
 
-        List<Transaction> transactions = ingestor.ingest("./data/PS_20174392719_1491204439457_log.csv", 100000d);
+        String filePath = "./data/PS_20174392719_1491204439457_log.csv";
+        //List<Transaction> transactions = ingestor.ingest(filePath, null);
         //transactions.forEach(IO::println);
 
         //List<Transaction> transactionsError = ingestor.ingest("./data/paysim_with_bad_data.csv", null);
@@ -18,6 +20,7 @@ public class Main {
 
         //analyzer.analyze(transactions);
 
+        /*
         TransactionRepository repositoryList = new TransactionListRepository(transactions);
         findAndPrintOptionalTransaction("C12345", repositoryList);
         findAndPrintOptionalTransaction("C1231006815", repositoryList);
@@ -26,6 +29,9 @@ public class Main {
         findAndPrintOptionalTransaction("C12345", repositoryMap);
         findAndPrintOptionalTransaction("C1231006815", repositoryMap);
         findAndPrintOptionalTransaction("C1868032458", repositoryMap);
+        */
+
+        report.report(filePath);
     }
 
     private static void findAndPrintOptionalTransaction(String nameOrig, TransactionRepository repository) {
