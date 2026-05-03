@@ -1,7 +1,7 @@
 package br.com.zenon.utils;
 
-import br.com.zenon.fraud.Transaction;
-import br.com.zenon.fraud.TransactionType;
+import br.com.zenon.fraud.model.Transaction;
+import br.com.zenon.fraud.model.TransactionType;
 
 import java.math.BigDecimal;
 
