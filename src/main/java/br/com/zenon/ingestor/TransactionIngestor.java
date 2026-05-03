@@ -1,4 +1,4 @@
-package br.com.zenon;
+package br.com.zenon.ingestor;
 
 import br.com.zenon.fraud.model.Transaction;
 import br.com.zenon.utils.IngestorUtils;
