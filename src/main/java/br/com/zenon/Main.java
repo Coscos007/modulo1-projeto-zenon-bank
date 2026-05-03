@@ -10,11 +10,29 @@ public class Main {
         var ingestor = new TransactionIngestor();
         var analyzer = new FraudAnalyzer();
 
-        List<Transaction> transactions = ingestor.ingest("./data/PS_20174392719_1491204439457_log.csv", 50000d);
+        List<Transaction> transactions = ingestor.ingest("./data/PS_20174392719_1491204439457_log.csv", 100000d);
         //transactions.forEach(IO::println);
-        analyzer.analyze(transactions);
 
         //List<Transaction> transactionsError = ingestor.ingest("./data/paysim_with_bad_data.csv", null);
         //transactionsError.forEach(IO::println);
+
+        //analyzer.analyze(transactions);
+
+        TransactionRepository repositoryList = new TransactionListRepository(transactions);
+        findAndPrintOptionalTransaction("C12345", repositoryList);
+        findAndPrintOptionalTransaction("C1231006815", repositoryList);
+        findAndPrintOptionalTransaction("C1868032458", repositoryList);
+        TransactionRepository repositoryMap = new TransactionMapRepository(transactions);
+        findAndPrintOptionalTransaction("C12345", repositoryMap);
+        findAndPrintOptionalTransaction("C1231006815", repositoryMap);
+        findAndPrintOptionalTransaction("C1868032458", repositoryMap);
+    }
+
+    private static void findAndPrintOptionalTransaction(String nameOrig, TransactionRepository repository) {
+        repository.getByNameOrig(nameOrig)
+                .ifPresentOrElse(
+                        t -> IO.println(t.toString()),
+                        () -> IO.println("Transação não encontrada para o cliente " + nameOrig)
+                );
     }
 }
