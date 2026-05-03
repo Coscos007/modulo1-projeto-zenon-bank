@@ -7,6 +7,10 @@ import java.math.BigDecimal;
 
 public class IngestorUtils {
 
+    public static Transaction buildTransaction(String line) {
+        return buildTransaction(line.split(","));
+    }
+
     public static Transaction buildTransaction(String[] columns) {
         if (columns == null || columns.length != 11) {
             throw new IllegalArgumentException("not enough columns in the line");
