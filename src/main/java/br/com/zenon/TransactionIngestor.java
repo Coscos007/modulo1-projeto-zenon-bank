@@ -1,6 +1,6 @@
 package br.com.zenon;
 
-import br.com.zenon.fraud.Transaction;
+import br.com.zenon.fraud.model.Transaction;
 import br.com.zenon.utils.IngestorUtils;
 
 import java.io.BufferedReader;
@@ -30,14 +30,14 @@ public class TransactionIngestor {
                 try {
                     transactions.add(IngestorUtils.buildTransaction(columns));
                 } catch (IllegalArgumentException e) {
-                    System.err.println("Erro: " + line + " | " + e);
+                    IO.println("ERRO: " + line + " | " + e);
                     errorCount++;
                 }
             }
             IO.println(errorCount + " lines with errors");
             return transactions;
         } catch (IOException e) {
-            System.err.println("ERROR: Failed to read file [" + filePath + "] with error: " + e.getMessage());
+            IO.println("ERROR: Failed to read file [" + filePath + "] with error: " + e.getMessage());
             return Collections.emptyList();
         }
     }
