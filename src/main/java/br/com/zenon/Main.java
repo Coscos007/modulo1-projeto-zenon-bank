@@ -34,7 +34,7 @@ public class Main {
     }
 
     private static void findAndPrintOptionalTransaction(String nameOrig, TransactionRepository repository) {
-        repository.getByNameOrig(nameOrig)
+        repository.getByOriginName(nameOrig)
                 .ifPresentOrElse(
                         t -> IO.println(t.toString()),
                         () -> IO.println("Transação não encontrada para o cliente " + nameOrig)
