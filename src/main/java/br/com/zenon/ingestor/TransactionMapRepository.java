@@ -19,11 +19,16 @@ public class TransactionMapRepository implements TransactionRepository {
         }
     }
 
-    public Optional<Transaction> getByNameOrig(String nameOrig) {
+    public Optional<Transaction> getByOriginName(String nameOrig) {
         long startTime = System.nanoTime();
         Transaction transaction = transactions.get(nameOrig);
         long endTime = System.nanoTime();
         IO.println("Time to find transaction by nameOrig=[" + nameOrig + "] using MAP: " + (endTime - startTime));
         return Optional.ofNullable(transaction);
+    }
+
+    @Override
+    public void save(Transaction transaction) {
+        throw new UnsupportedOperationException("Saving not supported for in-memory repository.");
     }
 }

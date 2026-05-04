@@ -69,10 +69,14 @@ public class IngestorUtils {
         return new Transaction(step, TransactionType.valueOf(columns[1]), amount,
                 nameOrig, oldBalanceOrig, newBalanceOrig,
                 nameDest, oldBalanceDest, newBalanceDest,
-                parseBoolean(isFraud), parseBoolean(isFlaggedFraud));
+                parseIntToBoolean(isFraud), parseIntToBoolean(isFlaggedFraud));
     }
 
-    private static boolean parseBoolean(int value) {
+    public static boolean parseIntToBoolean(int value) {
         return value == 1;
+    }
+
+    public static int parseBooleanToInt(boolean value) {
+        return value ? 1 : 0;
     }
 }
