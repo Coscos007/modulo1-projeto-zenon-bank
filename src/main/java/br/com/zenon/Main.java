@@ -15,7 +15,7 @@ public class Main {
         var analyzer = new FraudAnalyzer();
 
         String filePath = "./data/PS_20174392719_1491204439457_log.csv";
-        List<Transaction> transactions = ingestor.ingest(filePath, 100000d);
+        List<Transaction> transactions = ingestor.ingest(filePath, 100000L);
         transactions.forEach(IO::println);
 
         List<Transaction> transactionsError = ingestor.ingest("./data/paysim_with_bad_data.csv", null);
