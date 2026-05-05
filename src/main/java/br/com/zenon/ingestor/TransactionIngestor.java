@@ -14,9 +14,9 @@ import java.util.List;
 
 public class TransactionIngestor {
 
-    public List<Transaction> ingest(String filePath, Double amountThreshold) {
+    public List<Transaction> ingest(String filePath, Long amountThreshold) {
         if (amountThreshold == null) {
-            amountThreshold = Double.MAX_VALUE;
+            amountThreshold = Long.MAX_VALUE;
         }
         Path path = Paths.get(filePath);
         try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {

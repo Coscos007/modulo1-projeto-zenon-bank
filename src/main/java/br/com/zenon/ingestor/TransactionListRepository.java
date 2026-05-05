@@ -25,4 +25,9 @@ public class TransactionListRepository implements TransactionRepository {
     public void save(Transaction transaction) {
         throw new UnsupportedOperationException("Saving not supported for in-memory repository.");
     }
+
+    @Override
+    public void saveAll(List<Transaction> transactions) {
+        throw new UnsupportedOperationException("Saving not supported for in-memory repository.");
+    }
 }

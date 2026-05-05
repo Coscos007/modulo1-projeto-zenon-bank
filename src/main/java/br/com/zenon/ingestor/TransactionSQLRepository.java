@@ -6,6 +6,7 @@ import br.com.zenon.utils.IngestorUtils;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.List;
 import java.util.Optional;
 
 public class TransactionSQLRepository implements TransactionRepository {
@@ -51,20 +52,46 @@ public class TransactionSQLRepository implements TransactionRepository {
         try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/transacoes", "root", "senha123")) {
             String insertSql = "INSERT INTO TRANSACTIONS (step, type, amount, name_orig, old_balance_orig, new_balance_orig, name_dest, old_balance_dest, new_balance_dest, is_fraud, is_flagged_fraud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = connection.prepareStatement(insertSql);
-            statement.setInt(1, transaction.step());
-            statement.setString(2, transaction.type().name());
-            statement.setBigDecimal(3, transaction.amount());
-            statement.setString(4, transaction.nameOrig());
-            statement.setBigDecimal(5, transaction.oldBalanceOrig());
-            statement.setBigDecimal(6, transaction.newBalanceOrig());
-            statement.setString(7, transaction.nameDest());
-            statement.setBigDecimal(8, transaction.oldBalanceDest());
-            statement.setBigDecimal(9, transaction.newBalanceDest());
-            statement.setInt(10, IngestorUtils.parseBooleanToInt(transaction.isFraud()));
-            statement.setInt(11, IngestorUtils.parseBooleanToInt(transaction.isFlaggedFraud()));
+            prepareStatement(statement, transaction);
             statement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void saveAll(List<Transaction> transactions) {
+        IO.println("Saving " + transactions.size() + " transactions to MySQL");
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/transacoes?rewriteBatchedStatements=true", "root", "senha123")) {
+            connection.setAutoCommit(false);
+            String insertSql = "INSERT INTO TRANSACTIONS (step, type, amount, name_orig, old_balance_orig, new_balance_orig, name_dest, old_balance_dest, new_balance_dest, is_fraud, is_flagged_fraud) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(insertSql)) {
+                for (Transaction transaction : transactions) {
+                    prepareStatement(statement, transaction);
+                    statement.addBatch();
+                }
+                statement.executeBatch();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw new RuntimeException(e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void prepareStatement(PreparedStatement statement, Transaction transaction) throws SQLException {
+        statement.setInt(1, transaction.step());
+        statement.setString(2, transaction.type().name());
+        statement.setBigDecimal(3, transaction.amount());
+        statement.setString(4, transaction.nameOrig());
+        statement.setBigDecimal(5, transaction.oldBalanceOrig());
+        statement.setBigDecimal(6, transaction.newBalanceOrig());
+        statement.setString(7, transaction.nameDest());
+        statement.setBigDecimal(8, transaction.oldBalanceDest());
+        statement.setBigDecimal(9, transaction.newBalanceDest());
+        statement.setInt(10, IngestorUtils.parseBooleanToInt(transaction.isFraud()));
+        statement.setInt(11, IngestorUtils.parseBooleanToInt(transaction.isFlaggedFraud()));
     }
 }

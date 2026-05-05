@@ -1,18 +1,22 @@
 package br.com.zenon;
 
-import br.com.zenon.fraud.model.Transaction;
-import br.com.zenon.ingestor.TransactionIngestor;
+
+import br.com.zenon.ingestor.EfficientTransactionIngestor;
 import br.com.zenon.ingestor.TransactionRepository;
 import br.com.zenon.ingestor.TransactionSQLRepository;
 
-import java.util.List;
-
-public class DBMain {
+public class IngestionMain {
     static void main() {
+        var ingestor = new EfficientTransactionIngestor();
+        var repositorySQL = new TransactionSQLRepository();
+
         String filePath = "./data/PS_20174392719_1491204439457_log.csv";
 
-        TransactionRepository repositorySQL = new TransactionSQLRepository();
-        //insertTransactionsInDatabase(filePath, 10000L, repositorySQL);
+        long startTime = System.nanoTime();
+        //ingestor.readAsStream(filePath, repositorySQL::save, 10000L);
+        ingestor.readBatch(filePath, repositorySQL::saveAll, null);
+        long endTime = System.nanoTime();
+        IO.println("Time to insert transactions using MySQL and EfficientIngestor: " + (endTime - startTime));
 
         findAndPrintOptionalTransaction("C12345", repositorySQL);
         findAndPrintOptionalTransaction("C1231006815", repositorySQL);
@@ -25,15 +29,5 @@ public class DBMain {
                         t -> IO.println(t.toString()),
                         () -> IO.println("Transação não encontrada para o cliente " + nameOrig)
                 );
-    }
-
-    private static void insertTransactionsInDatabase(String filePath, Long amountThreshold, TransactionRepository repository) {
-        var ingestor = new TransactionIngestor();
-        List<Transaction> transactions = ingestor.ingest(filePath, amountThreshold);
-
-        long startTime = System.nanoTime();
-        transactions.forEach(repository::save);
-        long endTime = System.nanoTime();
-        IO.println("Time to insert " +  transactions.size() + " transactions using MySQL: " + (endTime - startTime));
     }
 }
